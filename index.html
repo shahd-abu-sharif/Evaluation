@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>منصة تقييم المتقدمين</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f7f9fc;--card:#fff;--navy:#1e2a3d;--blue:#3a6db5;--blue-dark:#2d558f;
+  --blue-soft:#eef3fb;--border:#e4e9f0;--muted:#6b7a90;--text:#2c3e50;
+  --success:#1e8a5f;--danger:#c0392b;--warn:#d68910;
+  --shadow:0 1px 3px rgba(20,40,80,.06),0 4px 16px rgba(20,40,80,.04);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Cairo',system-ui,sans-serif;font-size:15px;background:var(--bg);color:var(--text);line-height:1.8;min-height:100vh;-webkit-font-smoothing:antialiased}
+.h{background:#fff;border-bottom:1px solid var(--border);padding:16px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;position:sticky;top:0;z-index:10;box-shadow:0 1px 2px rgba(20,40,80,.04)}
+.h b{font-size:17px;font-weight:700;color:var(--navy)}
+.m{max-width:920px;margin:0 auto;padding:36px 20px 80px}
+.c{background:#fff;border:1px solid var(--border);border-radius:14px;padding:32px;margin-bottom:20px;box-shadow:var(--shadow)}
+.n{max-width:480px;margin:60px auto}
+label{display:block;font-weight:600;font-size:14px;color:var(--navy);margin-bottom:8px}
+input,select{width:100%;padding:13px 15px;border:1.5px solid var(--border);border-radius:10px;font:inherit;font-size:15px;background:#fff;color:var(--text);transition:border-color .15s,box-shadow .15s}
+input:focus,select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 4px rgba(58,109,181,.1)}
+input::placeholder{color:#a8b3c2}
+.f{margin-bottom:20px}
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:13px 24px;border-radius:10px;border:1.5px solid transparent;font:inherit;font-size:15px;font-weight:600;cursor:pointer;text-decoration:none;transition:background .15s,transform .1s}
+.btn:active:not(:disabled){transform:translateY(1px)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.p{background:var(--blue);color:#fff}
+.p:hover:not(:disabled){background:var(--blue-dark)}
+.s{background:#fff;border-color:var(--border);color:var(--navy)}
+.s:hover{background:#f5f8fc;border-color:#c5d1e0}
+.b{width:100%;padding:14px}
+.row{display:flex;gap:12px;justify-content:flex-end;flex-wrap:wrap;margin-top:24px}
+.err,.ok,.inf{padding:14px 16px;border-radius:10px;margin-bottom:20px;font-size:14px;line-height:1.6}
+.err{background:#fdf2f0;border:1px solid #f5d0cc;color:var(--danger)}
+.ok{background:#eefaf4;border:1px solid #c3ead6;color:var(--success)}
+.inf{background:var(--blue-soft);border:1px solid #d4e2f5;color:var(--blue-dark)}
+.mut{color:var(--muted);font-size:14px;line-height:1.7}
+.track{height:8px;background:#eaeff5;border-radius:999px;overflow:hidden;margin:16px 0 24px}
+.bar{height:100%;background:linear-gradient(90deg,var(--blue),#4a7ec7);transition:width .3s;width:0;border-radius:999px}
+.meta{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:13px;flex-wrap:wrap;gap:8px;font-weight:500}
+#timer{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:var(--blue-soft);border:1px solid #d4e2f5;border-radius:8px;font-weight:700;color:var(--blue-dark);font-size:15px;font-variant-numeric:tabular-nums;letter-spacing:.5px}
+#timer.warn{background:#fef5e7;border-color:#f9e0b3;color:var(--warn)}
+#timer.danger{background:#fdf2f0;border-color:#f5d0cc;color:var(--danger);animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+.qt{font-size:20px;font-weight:700;color:var(--navy);margin:20px 0 24px;line-height:1.6}
+.qt pre{background:#1e2a3d;color:#e4e9f0;padding:12px 14px;border-radius:8px;font-family:'Consolas',monospace;font-size:13px;direction:ltr;text-align:left;overflow-x:auto;margin-top:10px;line-height:1.5}
+.opt{display:flex;gap:14px;align-items:flex-start;border:1.5px solid var(--border);border-radius:12px;padding:18px;cursor:pointer;background:#fff;margin-bottom:12px;transition:.15s;font-size:15px;line-height:1.6}
+.opt:hover{border-color:#b8c5d6;background:#fafbfd}
+.opt.sel{border-color:var(--blue);background:var(--blue-soft);box-shadow:0 0 0 1px var(--blue)}
+.opt input{margin-top:6px;accent-color:var(--blue);width:auto;flex-shrink:0}
+.k{font-weight:700;color:var(--blue);min-width:24px;flex-shrink:0;font-size:15px}
+.hide{display:none!important}
+h1{font-size:24px;font-weight:800;color:var(--navy);margin-bottom:12px;letter-spacing:-.3px}
+h2{font-size:18px;font-weight:700;color:var(--navy);margin-bottom:14px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:12px 10px;text-align:right;border-bottom:1px solid var(--border)}
+th{background:#f9fbfd;font-weight:700;color:var(--navy);font-size:13px}
+tbody tr:hover{background:#fafbfd}
+#debug{display:none;background:#fdf2f0;border:1px solid #f5d0cc;color:var(--danger);padding:12px 20px;margin:12px 20px;border-radius:10px;font-size:13px}
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;margin-inline-end:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;z-index:1000;opacity:0;visibility:hidden;transition:opacity .2s,visibility .2s}
+.modal-overlay.active{opacity:1;visibility:visible}
+.modal{background:#fff;border-radius:14px;padding:28px;max-width:400px;width:90%;box-shadow:0 10px 40px rgba(0,0,0,.15);text-align:center}
+.modal h3{font-size:18px;margin-bottom:12px;color:var(--navy)}
+.modal p{color:var(--muted);font-size:14px;margin-bottom:24px}
+.modal-btns{display:flex;gap:12px;justify-content:center}
+.modal-btns .btn{flex:1;min-width:120px}
+@media(max-width:640px){.m{padding:20px 14px 60px}.c{padding:24px 20px;border-radius:12px}.n{margin:30px auto}.qt{font-size:18px}.qt pre{font-size:12px}.row .btn{flex:1}h1{font-size:21px}}
+</style>
+</head>
+<body>
+
+<div id="debug"></div>
+
+<div class="h">
+  <b>منصة تقييم المتقدمين</b>
+  <div id="hdr"></div>
+</div>
+
+<div class="m" id="app"></div>
+
+<div id="modal-overlay" class="modal-overlay">
+  <div class="modal">
+    <h3 id="modal-title">تأكيد</h3>
+    <p id="modal-message">هل أنت متأكد؟</p>
+    <div class="modal-btns">
+      <button id="modal-cancel" class="btn s">إلغاء</button>
+      <button id="modal-confirm" class="btn p">تأكيد</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var ADMIN_EMAIL = 'eng.shahd.abusharif@gmail.com';
+var FORMSPREE   = 'https://formspree.io/f/mjyyydbl';
+var TIME_LIMIT  = 600;
+
+var SPECS = [
+  {code:'UIUX',      label:'تصميم UI/UX'},
+  {code:'FRONTEND',  label:'تطوير Frontend (React)'},
+  {code:'QA',        label:'ضمان الجودة (QA)'},
+  {code:'MARKETING', label:'التسويق الرقمي'},
+  {code:'GRAPHIC',   label:'التصميم الجرافيكي'}
+];
+
+var SHARED = [
+  ['إذا استلمت مهمة ومتطلباتها مش واضحة، شو أفضل تصرف؟', ['أبدأ بالتنفيذ وأقرر التفاصيل من عندي.','أوضح المطلوب وأسأل عن التفاصيل الناقصة قبل التنفيذ.','أستنى لحد ما حدا يشرحلي كل إشي.','أتجاهل الجزء غير الواضح.'], 1],
+  ['اكتشفت مشكلة مهمة قبل موعد التسليم بوقت قصير. شو بتعمل؟', ['أخفي المشكلة عشان ما أتأخر.','أقيّم تأثيرها، وأبلغ الفريق، وأقترح حلًا مناسبًا.','أسلّم الشغل حتى لو بعرف إنه فيه مشكلة.','أغيّر كل الشغل من البداية.'], 1],
+  ['استلمت ملاحظات على شغلك مش مقتنع فيها. شو التصرف الأفضل؟', ['أرفضها لأنها بتتعارض مع رأيي.','أفهم سبب الملاحظات، وأناقشها، وأجرّب التحسين المناسب.','أطبّقها كلها بدون ما أفهمها.','أترك المهمة لحد ما يتولاها شخص ثاني.'], 1]
+];
+
+var SPEC_Q = {
+UIUX: [
+  ['شو الهدف الأساسي من الـ User Flow؟', ['تحديد ألوان الواجهة.','توضيح الخطوات اللي المستخدم بيمر فيها عشان يحقق هدفًا.','تحديد حجم الصور.','كتابة المحتوى التسويقي.'], 1],
+  ['شو الفرق بين Wireframe و High-Fidelity Design؟', ['ما في فرق.','الـ Wireframe يركز على الهيكل وتوزيع العناصر، والـ High-Fidelity يعرض التفاصيل البصرية بشكل أقرب للمنتج النهائي.','الـ Wireframe خاص بالموبايل فقط.','الـ High-Fidelity يُستخدم لكتابة الكود فقط.'], 1],
+  ['قبل تصميم شاشة جديدة، شو أهم خطوة؟', ['اختيار الألوان أولًا.','فهم المستخدم واحتياجه والمشكلة اللي الشاشة بتحلها.','تقليد تصميم مشهور.','إضافة أكبر عدد من الخصائص.'], 1],
+  ['شو المقصود بالـ Usability Testing؟', ['اختبار سرعة الإنترنت.','مراقبة مستخدمين وهم بحاولوا ينجزوا مهام محددة بالتصميم.','فحص الكود البرمجي.','قياس عدد ألوان الواجهة.'], 1],
+  ['أفضل خيار للتعامل مع رسالة خطأ في نموذج تسجيل؟', ['عرض رمز خطأ بدون تفسير.','توضيح المشكلة للمستخدم وكيف يصلحها.','مسح كل البيانات بدون تنبيه.','إخفاء رسالة الخطأ.'], 1],
+  ['شو فائدة الـ Design System؟', ['توحيد المكونات والقواعد البصرية وتحسين الاتساق.','استبدال البحث مع المستخدمين.','تحويل التصميم إلى قاعدة بيانات.','منع تعديل التصميم نهائيًا.'], 0],
+  ['المستخدمون لا يجدون زر التقديم — أول تصرف مناسب؟', ['إضافة ألوان أكثر لكل الشاشة.','مراجعة وضوح الزر ومكانه والتسلسل البصري، ثم اختبار التحسين.','حذف الزر.','افتراض أن المستخدمين مش منتبهين.'], 1],
+  ['موقف: المشرف طلب تغييرًا بتعتقدي إنه رح يصعّب الاستخدام. شو بتعملي؟', ['أرفض التعديل مباشرة.','أوضح أثر التغيير وأدعمه بمبررات أو نتائج اختبار، وأناقش بديلًا.','أنفذ التعديل بدون نقاش.','أترك المشروع.'], 1],
+  ['موقف: وقت محدود لتصميم شاشة فيها تفاصيل كثيرة. كيف بتحددي الأولويات؟', ['أعطي كل العناصر نفس الأهمية.','أبدأ بالهدف الرئيسي للمستخدم، ثم أرتب العناصر حسب الأهمية وسهولة الاستخدام.','أبدأ بالتفاصيل الزخرفية.','أحذف عناصر عشوائيًا.'], 1]
+],
+FRONTEND: [
+  ['شو وظيفة الـ Component في React؟', ['تخزين كلمات المرور.','بناء جزء من واجهة المستخدم يمكن إعادة استخدامه.','إدارة قاعدة البيانات مباشرة.','تشغيل خادم البريد.'], 1],
+  ['متى بنستخدم useState؟', ['لإدارة بيانات محلية داخل المكوّن تتغير مع التفاعل.','لإنشاء جدول بقاعدة البيانات.','لتنسيق CSS فقط.','لإرسال بريد إلكتروني.'], 0],
+  ['شو وظيفة الـ key عند عرض قائمة عناصر باستخدام map؟', ['تشفير العناصر.','مساعدة React على تمييز العناصر بين عمليات التحديث.','تحديد لون كل عنصر.','منع استخدام المكوّنات.'], 1],
+  ['إذا جلب البيانات من API تأخر، شو الأفضل تعرضي للمستخدم؟', ['شاشة فارغة بدون تفسير.','مؤشر تحميل، ثم البيانات أو حالة خطأ واضحة.','بيانات عشوائية.','إعادة تحميل الصفحة باستمرار.'], 1],
+  ['وين الأفضل تخزني مفتاح API السري؟', ['داخل ملف React المنشور.','داخل كود الواجهة بعد تشفير النص.','في الخادم أو متغيرات البيئة الآمنة.','داخل اسم المكوّن.'], 2],
+  ['شو المقصود بالـ Controlled Input في React؟', ['حقل تكون قيمته مرتبطة بالـ state ويتم تحديثها عبر معالج تغيير.','حقل ممنوع المستخدم يعدله.','حقل يظهر للمدير فقط.','حقل لا يحتاج أي قيمة.'], 0],
+  ['شو فائدة تقسيم الواجهة إلى مكوّنات صغيرة؟', ['زيادة تكرار الكود.','تسهيل إعادة الاستخدام والصيانة والاختبار.','منع تمرير البيانات.','الاستغناء عن إدارة الحالة.'], 1],
+  // ═══ 4 أسئلة عملية جديدة ═══
+  ['(عملي) ما الخطأ في هذا الكود؟<pre>function List({items}) {\n  return items.map(item =>\n    &lt;div&gt;{item.name}&lt;/div&gt;\n  );\n}</pre>', ['لا يوجد خطأ.','ناقص الـ key prop في العناصر الناتجة من map.','يجب استخدام useState.','لا يعمل بدون useEffect.'], 1],
+  ['(عملي) تحتاج مشاركة حالة (state) بين مكوّنين شقيقين. ما أفضل طريقة؟', ['تمرير props مباشرة بينهما.','رفع الحالة (lifting state up) إلى المكوّن الأب المشترك.','تخزينها في متغير عام خارج React.','استخدام window.state.'], 1],
+  ['(عملي) مكوّن يعيد الرسم (re-render) بشكل متكرر بدون سبب واضح. أول خطوة تشخيص؟', ['حذف المكوّن وإعادة كتابته.','استخدام React DevTools Profiler لتحديد سبب إعادة الرسم.','تحويله إلى class component.','إضافة useMemo لكل قيمة.'], 1],
+  ['(عملي) تحتاج إرسال نموذج إلى API. ما التصرف الصحيح عند فشل الطلب؟', ['إخفاء الخطأ ومتابعة العمل.','إظهار رسالة خطأ واضحة مع إمكانية إعادة المحاولة.','إعادة المحاولة تلقائيًا بلا حد.','إعادة تحميل الصفحة كاملة.'], 1],
+  ['موقف: المستخدم يضغط زر التقديم أكثر من مرة بسبب البطء. الحل الأفضل؟', ['تجاهل المشكلة.','تعطيل الزر أثناء الإرسال، وإظهار حالة واضحة، مع حماية العملية من التكرار على الخادم.','إخفاء الزر بعد أول ضغطة.','إعادة إرسال الطلب بشكل متكرر.'], 1]
+],
+QA: [
+  ['الفرق بين Test Case و Bug Report؟', ['ما في فرق.','الـ Test Case يحدد خطوات ونتيجة متوقعة، والـ Bug Report يوثق مشكلة فعلية.','الـ Bug Report خاص بالتصميم فقط.','الـ Test Case يُكتب بعد إغلاق المشروع فقط.'], 1],
+  ['شو المقصود بالـ Expected Result؟', ['النتيجة التي يجب أن تحدث حسب المتطلبات.','النتيجة التي ظهرت فعلًا.','اسم الشخص المسؤول عن الاختبار.','وقت بدء المشروع.'], 0],
+  ['ليش بنختبر الحالات السلبية في نموذج تسجيل؟', ['عشان نختبر شكل الصفحة فقط.','للتأكد من التعامل الصحيح مع البيانات الناقصة أو غير الصحيحة.','لتقليل عدد الاختبارات.','عشان نمنع المستخدمين من التسجيل.'], 1],
+  ['شو فائدة الـ Regression Testing؟', ['التأكد من أن التعديلات الجديدة ما كسرت وظائف كانت تعمل سابقًا.','قياس ألوان الواجهة.','استبدال جميع الاختبارات.','اختبار التطبيق لأول مرة فقط.'], 0],
+  ['أي عنصر مهم في تقرير Bug واضح؟', ['وصف عام مثل «الموقع خربان».','خطوات إعادة المشكلة، والنتيجة المتوقعة والفعلية، وبيئة الاختبار.','رأي شخصي بدون تفاصيل.','اسم المشروع فقط.'], 1],
+  ['الهدف من Boundary Value Analysis؟', ['اختبار القيم القريبة من حدود القبول والرفض.','اختبار الألوان.','اختبار سرعة المصمم.','حذف الحالات المتكررة فقط.'], 0],
+  ['الفرق بين Severity وPriority؟', ['المصطلحان لهما المعنى نفسه دائمًا.','Severity تشير إلى أثر العيب، وPriority إلى مدى استعجال إصلاحه.','Severity تحدد اسم المختبِر.','Priority تحدد عدد صفحات الموقع.'], 1],
+  ['موقف: نموذج يقبل بريدًا بصيغة غير صحيحة. كيف بتوثقي المشكلة؟', ['أكتب «التسجيل لا يعمل».','أوثق الخطوات والمدخلات والنتيجة الفعلية والمتوقعة، وأرفق دليلًا عند الإمكان.','أتجاهل المشكلة لأنها حالة نادرة.','أغيّر بيانات الاختبار حتى تنجح.'], 1],
+  ['موقف: وقت محدود لاختبار جزء من نظام كبير. كيف بتحددي الأولويات؟', ['أختبر الصفحات حسب ترتيبها فقط.','أبدأ بالوظائف الأساسية والمخاطر العالية والأجزاء الأكثر استخدامًا.','أختبر الألوان أولًا.','أختار الحالات الأسهل فقط.'], 1]
+],
+MARKETING: [
+  ['الفرق بين Reach و Engagement؟', ['Reach عدد الأشخاص الذين وصلهم المحتوى، وEngagement التفاعلات معه.','المصطلحان يعنيان عدد المبيعات فقط.','Reach يقيس التعليقات فقط.','Engagement يقيس عدد الموظفين.'], 0],
+  ['قبل إطلاق حملة، شو لازم تحددي؟', ['الألوان فقط.','الهدف والجمهور المستهدف والرسالة ومؤشرات النجاح.','عدد المنشورات بدون هدف.','وقت النشر فقط.'], 1],
+  ['وظيفة الـ Call to Action (CTA)؟', ['تزيين المنشور.','توجيه الجمهور لخطوة واضحة مثل التسجيل أو التقديم.','زيادة طول النص.','استبدال المحتوى.'], 1],
+  ['منشور حقق وصولًا عاليًا لكن تسجيلات قليلة. أول خطوة تحليلية؟', ['اعتبار الحملة ناجحة بالكامل.','فحص ملاءمة الجمهور والرسالة والرابط وخطوات التسجيل.','زيادة عدد المنشورات نفسها دون تحليل.','إيقاف كل قنوات التسويق فورًا.'], 1],
+  ['ليش بنستخدم UTM Parameters؟', ['لتنسيق الصور.','لتتبع مصدر الزيارات والحملات داخل أدوات التحليل.','لزيادة عدد المتابعين تلقائيًا.','لتغيير اسم الحساب.'], 1],
+  ['المقصود بمعدل التحويل Conversion Rate؟', ['نسبة الأشخاص الذين أكملوا الإجراء المطلوب من مجموعة الزوار أو المستخدمين المحددة.','عدد المنشورات المنشورة.','عدد ألوان الهوية.','مجموع ساعات العمل.'], 0],
+  ['الأفضل عند تجربة نسختين من إعلان؟', ['تغيير كل عناصر النسختين عشوائيًا.','تحديد هدف واضح، وتغيير عنصر محدد عند الإمكان، ثم مقارنة النتائج ضمن ظروف مناسبة.','اختيار النسخة الأجمل دون قياس.','إيقاف النسخة الأولى قبل جمع أي بيانات.'], 1],
+  ['موقف: حملة لاستقطاب طلاب للتدريب بميزانية شبه معدومة. خطتك الأولية؟', ['حملة مدفوعة مكلفة.','تحديد الطلاب المستهدفين، ورسالة واضحة، ومحتوى قابل للمشاركة، وقنوات مجانية مناسبة، وقياس التسجيلات.','نشر منشورات عامة بدون رابط.','التركيز على عدد الإعجابات فقط.'], 1],
+  ['موقف: تفاعل جيد لكن الناس لا تضغط رابط التسجيل. كيف بتتصرفي؟', ['أزيد الإيموجي فقط.','أراجع وضوح الدعوة للإجراء، وقيمة العرض، ومكان الرابط، وسهولة الوصول لصفحة التسجيل.','أغيّر اسم العلامة التجارية.','أوقف النشر نهائيًا.'], 1]
+],
+GRAPHIC: [
+  ['المقصود بالـ Visual Hierarchy؟', ['ترتيب العناصر بصريًا حسب أهميتها.','استخدام أكبر عدد من الألوان.','وضع كل العناصر بنفس الحجم.','إضافة ظلال لكل عنصر.'], 0],
+  ['ليش بنستخدم Grid في التصميم؟', ['لتوحيد المحاذاة وتنظيم توزيع العناصر.','لتغيير نوع الملف.','لزيادة حجم الصورة فقط.','لاستبدال الخطوط.'], 0],
+  ['أنسب صيغة لشعار يحتاج خلفية شفافة؟', ['JPG.','PNG أو SVG حسب الاستخدام.','ملف نصي TXT.','MP3.'], 1],
+  ['الأفضل عند تصميم منشور فيه عنوان وتفاصيل كثيرة؟', ['جعل كل النصوص بنفس الحجم.','ترتيب المعلومات حسب الأولوية، وتوفير تباين ومساحات تساعد على القراءة.','تصغير كل النصوص قدر الإمكان.','إضافة زخارف لتعبئة كل مساحة فارغة.'], 1],
+  ['الفرق الأساسي بين RGB و CMYK؟', ['RGB مناسب للشاشات، وCMYK يُستخدم غالبًا للطباعة.','RGB للطباعة فقط.','CMYK للخطوط فقط.','ما في أي فرق.'], 0],
+  ['كيف بتحافظي على اتساق هوية بصرية عبر منشورات؟', ['تغيير الخطوط والألوان في كل منشور.','الالتزام بنظام واضح للألوان والخطوط والمكونات مع مرونة مناسبة للمحتوى.','استخدام قالب واحد حرفيًا لكل الحالات دون تعديل.','الاعتماد على الذاكرة فقط.'], 1],
+  ['فائدة تسليم ملف المصدر القابل للتعديل؟', ['تمكين الفريق من مراجعة التصميم وتعديله لاحقًا.','منع أي تعديل مستقبلي.','تقليل دقة الصورة تلقائيًا.','استبدال النسخة النهائية.'], 0],
+  ['موقف: تصميم منشور يحتوي معلومات أكثر من المساحة المتاحة. التصرف الأفضل؟', ['تصغير كل النص حتى يصبح صعب القراءة.','تحديد أهم المعلومات، وإعادة ترتيبها، واقتراح توزيع أو صيغة بديلة إذا لزم.','حذف معلومات عشوائيًا.','إضافة المزيد من الألوان لحل المشكلة.'], 1],
+  ['موقف: التصميم واضح على اللابتوب لكن غير واضح على الهاتف. شو بتعملي؟', ['أتركه كما هو.','أختبر المقاسات الصغيرة وأعدل حجم الخط والتباين والمسافات حسب الاستخدام الفعلي.','أضيف ظلالًا لكل النصوص.','أحوّل النص كله إلى صورة أصغر.'], 1]
+]
+};
+
+var user = null, qs = [], idx = 0, ans = {}, spec = null;
+var submitted = false;
+var timerId = null, timerLeft = TIME_LIMIT;
+var KEYS = ['أ','ب','ج','د'];
+
+function $(id){ return document.getElementById(id); }
+
+function el(tag, attrs, kids){
+  var e = document.createElement(tag);
+  if (attrs) {
+    for (var k in attrs) {
+      var v = attrs[k];
+      if (k === 'cls') e.className = v;
+      else if (k === 'txt') e.textContent = v;
+      else if (k === 'html') e.innerHTML = v;
+      else if (k === 'style') e.setAttribute('style', v);
+      else if (k === 'on' && typeof v === 'function') e.onclick = v;
+      else if (k === 'for') e.setAttribute('for', v);
+      else e.setAttribute(k, v);
+    }
+  }
+  if (kids) {
+    (Array.isArray(kids) ? kids : [kids]).forEach(function(c){
+      if (c === null || c === undefined) return;
+      e.appendChild(typeof c === 'string' ? document.createTextNode(c) : c);
+    });
+  }
+  return e;
+}
+
+function reset(){
+  var a = $('app'); if (a) a.innerHTML = '';
+  var h = $('hdr'); if (h) h.innerHTML = '';
+}
+function safeGet(k, fb){ try{ var v = localStorage.getItem(k); return v ? JSON.parse(v) : fb; }catch(_){ return fb; } }
+function safeSet(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(_){} }
+
+function showConfirm(title, message, onConfirm){
+  var overlay = $('modal-overlay');
+  $('modal-title').textContent = title || 'تأكيد';
+  $('modal-message').textContent = message || 'هل أنت متأكد؟';
+
+  var confirmBtn = $('modal-confirm');
+  var cancelBtn = $('modal-cancel');
+
+  var newConfirm = confirmBtn.cloneNode(true);
+  confirmBtn.parentNode.replaceChild(newConfirm, confirmBtn);
+  var newCancel = cancelBtn.cloneNode(true);
+  cancelBtn.parentNode.replaceChild(newCancel, cancelBtn);
+
+  newConfirm.onclick = function(){
+    overlay.classList.remove('active');
+    if (onConfirm) onConfirm();
+  };
+  newCancel.onclick = function(){ overlay.classList.remove('active'); };
+  overlay.onclick = function(ev){ if (ev.target === overlay) overlay.classList.remove('active'); };
+
+  overlay.classList.add('active');
+}
+
+function startTimer(){
+  stopTimer();
+  timerLeft = TIME_LIMIT;
+  updateTimerUI();
+  timerId = setInterval(function(){
+    timerLeft--;
+    updateTimerUI();
+    if (timerLeft <= 0) { stopTimer(); doSubmit(true); }
+  }, 1000);
+}
+function stopTimer(){ if (timerId) { clearInterval(timerId); timerId = null; } }
+function updateTimerUI(){
+  var t = $('timer');
+  if (!t) return;
+  var m = Math.floor(timerLeft / 60);
+  var s = timerLeft % 60;
+  t.textContent = '⏱ ' + m + ':' + (s < 10 ? '0' : '') + s;
+  t.classList.remove('warn','danger');
+  if (timerLeft <= 60) t.classList.add('danger');
+  else if (timerLeft <= 180) t.classList.add('warn');
+}
+
+function submitToFormspree(fields, callback){
+  var fd = new FormData();
+  for (var k in fields) fd.append(k, String(fields[k] == null ? '' : fields[k]));
+
+  fetch(FORMSPREE, { method:'POST', body:fd, headers:{ 'Accept':'application/json' } })
+  .then(function(res){ console.log('Formspree status:', res.status); return res.ok; })
+  .then(function(ok){ console.log('Formspree OK:', ok); if (callback) callback(ok); })
+  .catch(function(err){
+    console.error('Formspree error:', err);
+    submitViaIframe(fields);
+    if (callback) callback(false);
+  });
+}
+
+function submitViaIframe(fields){
+  var frameName = 'fp_frame_' + Date.now();
+  var iframe = document.createElement('iframe');
+  iframe.name = frameName;
+  iframe.style.cssText = 'position:absolute;width:0;height:0;border:0;visibility:hidden;';
+  document.body.appendChild(iframe);
+
+  var form = document.createElement('form');
+  form.method = 'POST';
+  form.action = FORMSPREE;
+  form.target = frameName;
+  form.style.display = 'none';
+  form.acceptCharset = 'UTF-8';
+
+  for (var k in fields) {
+    var inp = document.createElement('input');
+    inp.type = 'hidden';
+    inp.name = k;
+    inp.value = String(fields[k] == null ? '' : fields[k]);
+    form.appendChild(inp);
+  }
+  document.body.appendChild(form);
+  try { form.submit(); } catch(e) { console.error('iframe submit failed:', e); }
+  setTimeout(function(){
+    try { form.remove(); } catch(_){}
+    setTimeout(function(){ try { iframe.remove(); } catch(_){} }, 3000);
+  }, 2000);
+}
+
+function login(){
+  reset();
+  stopTimer();
+  user = null;
+  submitted = false;
+
+  var nameIn = el('input', {id:'n', placeholder:'الاسم الكامل', autocomplete:'name'});
+  var mailIn = el('input', {type:'email', id:'e', dir:'ltr', placeholder:'name@example.com', autocomplete:'email'});
+  var errBox = el('div', {cls:'err hide'});
+  var btn = el('button', {cls:'btn p b', txt:'متابعة'});
+
+  function handle(){
+    errBox.classList.add('hide');
+    var n = String(nameIn.value || '').trim();
+    var e = String(mailIn.value || '').trim().toLowerCase();
+
+    if (n.length < 3) {
+      errBox.textContent = 'الاسم قصير جدًا (3 أحرف على الأقل).';
+      errBox.classList.remove('hide');
+      nameIn.focus();
+      return;
+    }
+    if (!/^\S+@\S+\.\S+$/.test(e)) {
+      errBox.textContent = 'صيغة البريد الإلكتروني غير صحيحة.';
+      errBox.classList.remove('hide');
+      mailIn.focus();
+      return;
+    }
+
+    user = {name:n, email:e};
+    if (e === ADMIN_EMAIL.toLowerCase()) dashboard();
+    else intro();
+  }
+
+  btn.onclick = handle;
+  mailIn.onkeydown = function(ev){ if (ev.key === 'Enter') handle(); };
+  nameIn.onkeydown = function(ev){ if (ev.key === 'Enter') mailIn.focus(); };
+
+  var card = el('div', {cls:'c n'});
+  card.appendChild(el('h1', {txt:'تسجيل الدخول'}));
+  card.appendChild(el('p', {cls:'mut', txt:'أدخل اسمك الكامل وبريدك الإلكتروني للمتابعة.'}));
+  card.appendChild(errBox);
+
+  var f1 = el('div', {cls:'f'});
+  f1.appendChild(el('label', {txt:'الاسم الكامل'}));
+  f1.appendChild(nameIn);
+  card.appendChild(f1);
+
+  var f2 = el('div', {cls:'f'});
+  f2.appendChild(el('label', {txt:'البريد الإلكتروني'}));
+  f2.appendChild(mailIn);
+  card.appendChild(f2);
+
+  card.appendChild(btn);
+  $('app').appendChild(card);
+  setTimeout(function(){ nameIn.focus(); }, 100);
+}
+
+function intro(){
+  reset();
+  stopTimer();
+  $('hdr').appendChild(el('button', {cls:'btn s', style:'padding:8px 16px;font-size:13px', on:function(){
+    showConfirm('خروج', 'هل تريد الخروج والعودة لشاشة الدخول؟', login);
+  }, txt:'خروج'}));
+
+  var sel = el('select', {id:'sp'});
+  sel.appendChild(el('option', {value:'', txt:'— اختر التخصص —'}));
+  SPECS.forEach(function(s){ sel.appendChild(el('option', {value:s.code, txt:s.label})); });
+
+  var err = el('div', {cls:'err hide'});
+  var btn = el('button', {cls:'btn p b', txt:'ابدأ الاختبار (10 دقائق)'});
+
+  btn.onclick = function(){
+    if (!sel.value) {
+      err.textContent = 'يرجى اختيار التخصص أولًا.';
+      err.classList.remove('hide');
+      return;
+    }
+    spec = sel.value;
+    qs = SHARED.concat(SPEC_Q[spec] || []);
+    idx = 0;
+    ans = {};
+    submitted = false;
+    startTimer();
+    question();
+  };
+
+  var card = el('div', {cls:'c n'});
+  card.appendChild(el('h1', {txt:'اختيار التخصص وتعليمات الاختبار'}));
+  card.appendChild(el('div', {cls:'inf', html:
+    '<b>المدة:</b> 10 دقائق — سيتم الإرسال تلقائيًا عند انتهاء الوقت<br>' +
+    '<b>الدرجة العظمى:</b> 20 درجة<br>' +
+    'انتبه: المؤقت يبدأ بمجرد الضغط على زر البدء.'
+  }));
+  card.appendChild(err);
+
+  var f = el('div', {cls:'f'});
+  f.appendChild(el('label', {txt:'التخصص'}));
+  f.appendChild(sel);
+  card.appendChild(f);
+  card.appendChild(btn);
+
+  $('app').appendChild(card);
+}
+
+function question(){
+  if (submitted) return;
+  reset();
+  $('hdr').appendChild(el('button', {cls:'btn s', style:'padding:8px 16px;font-size:13px', on:function(){
+    showConfirm('خروج', 'هل تريد الخروج؟ سيتم إلغاء الاختبار الحالي ولن يتم حفظ إجاباتك.', function(){
+      stopTimer();
+      login();
+    });
+  }, txt:'خروج'}));
+
+  var q = qs[idx];
+  var total = qs.length;
+  var pct = (idx/total)*100;
+
+  var opts = el('div');
+  q[1].forEach(function(txt, i){
+    var isSel = ans[idx] === i;
+    var card = el('label', {cls:'opt' + (isSel ? ' sel' : '')});
+    var rdo = el('input', {type:'radio', name:'q'+idx, value:String(i)});
+    if (isSel) rdo.checked = true;
+
+    function selectThis(){
+      ans[idx] = i;
+      var all = document.querySelectorAll('.opt');
+      for (var j=0;j<all.length;j++) all[j].classList.remove('sel');
+      card.classList.add('sel');
+    }
+
+    rdo.onchange = selectThis;
+    card.onclick = function(ev){
+      if (ev.target !== rdo) { rdo.checked = true; selectThis(); }
+    };
+
+    card.appendChild(rdo);
+    card.appendChild(el('span', {cls:'k', txt:KEYS[i] + '.'}));
+    card.appendChild(el('span', {html:txt}));
+    opts.appendChild(card);
+  });
+
+  var prev = el('button', {cls:'btn s', type:'button', txt:'السابق'});
+  if (idx === 0) prev.disabled = true;
+  prev.onclick = function(){ if (idx > 0){ idx--; question(); } };
+
+  var isLast = (idx === total - 1);
+  var next = el('button', {cls:'btn p', type:'button', txt: isLast ? 'إنهاء وإرسال الاختبار' : 'التالي'});
+  next.onclick = function(){
+    if (ans[idx] === undefined) {
+      alert('الرجاء اختيار إجابة قبل المتابعة.');
+      return;
+    }
+    if (!isLast) { idx++; question(); }
+    else {
+      next.disabled = true;
+      next.innerHTML = '<span class="spinner"></span> جاري الإرسال...';
+      doSubmit(false);
+    }
+  };
+
+  var timerEl = el('span', {id:'timer', txt:'⏱ 10:00'});
+
+  var card = el('div', {cls:'c'});
+  card.appendChild(el('div', {cls:'meta'}, [
+    el('span', {txt:'السؤال ' + (idx+1) + ' من ' + total + ' — ' + (SPECS.find(function(s){return s.code===spec;}) || {}).label}),
+    timerEl
+  ]));
+  card.appendChild(el('div', {cls:'track'}, [el('div', {cls:'bar', style:'width:' + pct + '%'})]));
+  card.appendChild(el('div', {cls:'qt', html:q[0]}));
+  card.appendChild(opts);
+  card.appendChild(el('div', {cls:'row'}, [prev, next]));
+
+  $('app').appendChild(card);
+  updateTimerUI();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function doSubmit(fromTimer){
+  if (submitted) return;
+  submitted = true;
+  stopTimer();
+
+  var specLabel = (SPECS.find(function(s){return s.code===spec;}) || {}).label || spec;
+
+  var fields = {};
+  fields['_subject']         = 'نتيجة اختبار: ' + user.name + ' — ' + specLabel;
+  fields['candidate_name']   = user.name;
+  fields['candidate_email']  = user.email;
+  fields['specialty']        = specLabel;
+  fields['submitted_at']     = new Date().toLocaleString('ar-EG');
+  if (fromTimer) fields['note'] = 'تم الإرسال تلقائيًا عند انتهاء الوقت';
+
+  var correct = 0;
+  qs.forEach(function(q, i){
+    var sel = ans[i];
+    var isOk = (sel !== undefined && sel === q[2]);
+    if (isOk) correct++;
+
+    var answerText = (sel !== undefined && q[1][sel] !== undefined)
+      ? KEYS[sel] + '. ' + q[1][sel].replace(/<[^>]+>/g,'')
+      : '(لم يجب)';
+    var correctText = KEYS[q[2]] + '. ' + q[1][q[2]].replace(/<[^>]+>/g,'');
+
+    fields['q' + (i+1)] = q[0].replace(/<[^>]+>/g,'');
+    fields['a' + (i+1)] = answerText;
+    fields['r' + (i+1)] = isOk ? '✓ صحيح' : '✗ خطأ — الصحيح: ' + correctText;
+  });
+
+  var score = Math.round(correct * (20/qs.length) * 100) / 100;
+  fields['correct_count'] = correct + '/' + qs.length;
+  fields['test_score']    = score + '/20';
+
+  var saved = safeGet('subs', []);
+  saved.push({
+    name: user.name, email: user.email, spec: specLabel,
+    score: score, correct: correct, total: qs.length,
+    date: new Date().toISOString(),
+    fields: fields
+  });
+  safeSet('subs', saved);
+
+  showSuccess(fromTimer);
+
+  submitToFormspree(fields, function(ok){
+    console.log('انتهت محاولة الإرسال. نجاح:', ok);
+  });
+}
+
+// ═══════════ شاشة النجاح بدون نتيجة ═══════════
+function showSuccess(fromTimer){
+  reset();
+  $('hdr').appendChild(el('button', {cls:'btn s', style:'padding:8px 16px;font-size:13px', on:login, txt:'خروج'}));
+
+  var c = el('div', {cls:'c n'});
+  c.appendChild(el('h1', {txt:'✓ تم تسليم الاختبار'}));
+
+  var successMsg = fromTimer
+    ? 'انتهى الوقت المحدد وتم إرسال إجاباتك تلقائيًا.'
+    : 'شكرًا ' + user.name + '، تم استلام إجاباتك بنجاح.';
+  c.appendChild(el('div', {cls:'ok', txt: successMsg}));
+
+  c.appendChild(el('p', {cls:'mut', txt:'تم تسجيل إجاباتك وإرسالها إلى فريق التقييم. سيتم التواصل معك بخصوص المرحلة التالية.'}));
+
+  c.appendChild(el('div', {style:'margin-top:24px;text-align:center'}, [
+    el('button', {cls:'btn s', on:login, txt:'العودة للصفحة الرئيسية'})
+  ]));
+
+  $('app').appendChild(c);
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function dashboard(){
+  reset();
+  stopTimer();
+  $('hdr').appendChild(el('button', {cls:'btn s', style:'padding:8px 16px;font-size:13px', on:login, txt:'خروج'}));
+
+  var app = $('app');
+  app.appendChild(el('h1', {txt:'لوحة التحكم'}));
+  app.appendChild(el('p', {cls:'mut', txt:'مرحبًا ' + user.name + ' — إدارة التقييمات.'}));
+
+  var saved = safeGet('subs', []);
+
+  var stats = el('div', {cls:'c'});
+  stats.appendChild(el('div', {cls:'inf', html:
+    '<b>عدد الاختبارات على هذا المتصفح:</b> ' + saved.length + '<br>' +
+    'كل الردود تُرسل تلقائيًا إلى بريدك عبر Formspree.'
+  }));
+  app.appendChild(stats);
+
+  if (saved.length) {
+    var wrap = el('div', {cls:'c', style:'padding:0;overflow:hidden'});
+    var tbl = el('table');
+    var thead = el('thead');
+    var hrow = el('tr');
+    ['الاسم','البريد','التخصص','الدرجة','التاريخ'].forEach(function(t){
+      hrow.appendChild(el('th', {txt:t}));
+    });
+    thead.appendChild(hrow);
+    tbl.appendChild(thead);
+
+    var tbody = el('tbody');
+    saved.slice().reverse().forEach(function(s){
+      var tr = el('tr');
+      tr.appendChild(el('td', {txt:s.name}));
+      tr.appendChild(el('td', {txt:s.email, style:'direction:ltr;text-align:right;font-size:13px'}));
+      tr.appendChild(el('td', {txt:s.spec || '-'}));
+      tr.appendChild(el('td', {txt:s.score + '/20', style:'font-weight:700;color:var(--blue)'}));
+      tr.appendChild(el('td', {txt:new Date(s.date).toLocaleDateString('ar-EG'), style:'font-size:13px;color:var(--muted)'}));
+      tbody.appendChild(tr);
+    });
+    tbl.appendChild(tbody);
+    wrap.appendChild(tbl);
+    app.appendChild(wrap);
+  } else {
+    app.appendChild(el('div', {cls:'c', style:'text-align:center;padding:48px 24px'}, [
+      el('p', {cls:'mut', txt:'لا توجد اختبارات محفوظة على هذا المتصفح بعد.'})
+    ]));
+  }
+
+  var box = el('div', {cls:'c'});
+  box.appendChild(el('h2', {txt:'مصادر النتائج'}));
+  box.appendChild(el('p', {cls:'mut', html:
+    '١. <b>البريد الإلكتروني:</b> كل اختبار يصل إلى بريدك عبر Formspree (بعد تأكيد البريد).<br>' +
+    '٢. <b>لوحة Formspree:</b> لمشاهدة كل الردود السابقة.'
+  }));
+  box.appendChild(el('a', {cls:'btn p', href:'https://formspree.io/forms', target:'_blank', style:'text-decoration:none;margin-top:12px;display:inline-block', txt:'فتح لوحة Formspree ←'}));
+  app.appendChild(box);
+}
+
+window.addEventListener('error', function(e){
+  var d = $('debug');
+  if (d){ d.style.display='block'; d.textContent='خطأ: '+(e.error?e.error.message:e.message); }
+});
+window.addEventListener('unhandledrejection', function(e){
+  var d = $('debug');
+  if (d){ d.style.display='block'; d.textContent='خطأ: '+(e.reason?(e.reason.message||e.reason):'unknown'); }
+});
+
+login();
+</script>
+</body>
+</html>
