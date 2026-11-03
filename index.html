@@ -104,8 +104,7 @@ var TIME_LIMIT  = 720;
 
 var NV_IMG1 = 'https://i.pinimg.com/736x/00/cd/46/00cd469652713fe821646fdab85bd2b3.jpg';
 var NV_IMG2 = 'https://i.pinimg.com/736x/e5/f0/ae/e5f0ae8d36fb120b4f599f479fd900fc.jpg';
-// ⚠ ضع الجواب الصحيح (0=A ... 7=H) أو null للمراجعة اليدوية
-var NV_ANSWERS = [null, null];
+var NV_ANSWERS = [3, 3];
 
 var SPECS = [
   {code:'UIUX',      label:'تصميم UI/UX'},
@@ -188,7 +187,7 @@ UIUX: [
 FRONTEND: [
   ['ما ناتج هذا الكود بعد أول render وبعد الضغط على الزر مرة واحدة؟<pre>function App() {\n  const [n, setN] = useState(0);\n  const handle = () => {\n    setN(n + 1);\n    setN(n + 1);\n  };\n  return &lt;button onClick={handle}&gt;{n}&lt;/button&gt;;\n}</pre>', [
     'يصبح الرقم 2 لأن كل setN تُنفذ فورًا في نفس اللحظة.',
-    'يبقى الرقم 0 لأن setState لا يعمل داخل functions في الـ component.',
+    'يبقى الرقم 0 لأن setState لا يعمل داخل event handlers مباشرة.',
     'يصبح الرقم 1 لأن React يجمع التحديثين بنفس القيمة القديمة.',
     'يصبح الرقم 3 لأن كل setN تضيف واحدًا بعد الـ render السابق.'
   ], 2],
@@ -219,7 +218,7 @@ FRONTEND: [
   ['ما الفرق العملي بين CSR وSSR من جهة تجربة المستخدم وSEO؟', [
     'لا فرق؛ كلاهما يعرض المحتوى بنفس السرعة ونفس الفهرسة.',
     'SSR يسلّم HTML مبكرًا، وCSR يعتمد على JS قبل ظهور المحتوى.',
-    'CSR يرسل HTML جاهزًا من الخادم، وSSR يترك الرسم للمتصفح.',
+    'الفرق الأساسي في الأداء فقط، أما الـ SEO فيتساوى لأن المحركات تنفذ JavaScript دائماً.',
     'اختيار الاستراتيجية لا يؤثر على SEO لأن المحركات تنفذ JS.'
   ], 1],
   ['ما أفضل ممارسة عند العمل على ميزة جديدة في Git على GitHub؟', [
@@ -244,7 +243,7 @@ FRONTEND: [
     'إعادة كتابة الـ component كاملًا لأن الكود القديم غالبًا هو السبب.',
     'React DevTools Profiler لمعرفة ما أثار كل render وأي props.',
     'حذف كل useEffect في الـ component لتقليل التفاعلات الجانبية كليًا.',
-    'زيادة سرعة الإنترنت عند المستخدم لأن المشكلة في الشبكة.'
+    'فحص الـ parent component لمعرفة إن كان يمرر objects أو functions جديدة في كل render.'
   ], 1]
 ],
 QA: [
