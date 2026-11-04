@@ -105,10 +105,8 @@ var TIME_LIMIT         = 720;
 
 var NV_IMG1 = 'https://i.pinimg.com/736x/00/cd/46/00cd469652713fe821646fdab85bd2b3.jpg';
 var NV_IMG2 = 'https://i.pinimg.com/736x/e5/f0/ae/e5f0ae8d36fb120b4f599f479fd900fc.jpg';
-// ⚠ غيّر [3,3] إلى [7,0] إذا كانت إجاباتك الصحيحة H ثم A
 var NV_ANSWERS = [3, 3];
 
-// ✅ FRONTEND الآن أولاً، ثم UIUX
 var SPECS = [
   {code:'FRONTEND',  label:'تطوير Frontend (React)'},
   {code:'UIUX',      label:'تصميم UI/UX'},
@@ -124,7 +122,6 @@ var SHARED = [
   ['اختر الحرف الذي يكمل النمط في الصورة (الخانة الناقصة هي «؟»).', BLANK8, NV_ANSWERS[1], 'nv', 'استدلال بصري 2', NV_IMG2]
 ];
 
-// ✅ FRONTEND أولاً، ثم UIUX (الأسئلة والإجابات ما تغيرت)
 var SPEC_Q = {
 FRONTEND: [
   ['ما ناتج هذا الكود بعد أول render وبعد الضغط على الزر مرة واحدة؟<pre>function App() {\n  const [n, setN] = useState(0);\n  const handle = () => {\n    setN(n + 1);\n    setN(n + 1);\n  };\n  return &lt;button onClick={handle}&gt;{n}&lt;/button&gt;;\n}</pre>', [
@@ -448,6 +445,17 @@ function lbl(q, i){ return q[3] === 'nv' ? NV_LETTERS[i] : KEYS[i]; }
 function fmtTime(s){ var m = Math.floor(s/60); return m + ':' + (s%60 < 10 ? '0' : '') + (s%60); }
 function $(id){ return document.getElementById(id); }
 
+// ✅ دالة تنظيف النصوص من وسوم HTML لحماية Web3Forms
+function escapeHtml(unsafe) {
+    if (typeof unsafe !== 'string') return unsafe;
+    return unsafe
+         .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/'/g, "&#039;");
+}
+
 function el(tag, attrs, kids){
   var e = document.createElement(tag);
   if (attrs) {
@@ -736,6 +744,7 @@ function doSubmit(fromTimer){
   var specLabel = (SPECS.find(function(s){return s.code===spec;}) || {}).label || spec;
 
   var fields = {};
+  fields['botcheck']             = ''; // حماية إضافية
   fields['subject']              = '🔔 نتيجة اختبار جديدة: ' + user.name + ' — ' + specLabel;
   fields['from_name']            = 'منصة تقييم المتقدمين';
   fields['replyto']              = user.email;
@@ -758,17 +767,19 @@ function doSubmit(fromTimer){
       if (sel !== undefined && sel === q[2]) correct++;
     }
 
+    // ✅ تنظيف النص من وسوم HTML باستخدام escapeHtml
     var tmpQ = document.createElement('div');
     tmpQ.innerHTML = q[0];
-    var plainQ = (tmpQ.textContent || '').trim();
-    if (q[4]) plainQ += '\n[' + q[4] + ']';
+    var plainQ = escapeHtml((tmpQ.textContent || '').trim());
+    
+    if (q[4]) plainQ += '\n[' + escapeHtml(q[4]) + ']';
     if (q[5]) plainQ += '\n' + q[5];
 
     var optText = function(n){
       if (q[3] === 'nv') return 'الشكل ' + lbl(q,n);
       var t = document.createElement('div');
       t.innerHTML = q[1][n];
-      return (t.textContent || '').trim();
+      return escapeHtml((t.textContent || '').trim());
     };
 
     var answerText = (sel !== undefined) ? lbl(q,sel) + '. ' + optText(sel) : '(لم يجب)';
