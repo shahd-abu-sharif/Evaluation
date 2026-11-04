@@ -122,19 +122,20 @@ var SHARED = [
   ['اختر الحرف الذي يكمل النمط في الصورة (الخانة الناقصة هي «؟»).', BLANK8, NV_ANSWERS[1], 'nv', 'استدلال بصري 2', NV_IMG2]
 ];
 
+// ✅ FRONTEND: تم تحويل الأسئلة التقنية إلى نص وصفي (بدون أكواد) لتفادي فلتر Web3Forms
 var SPEC_Q = {
 FRONTEND: [
-  ['ما ناتج هذا الكود بعد أول render وبعد الضغط على الزر مرة واحدة؟<pre>function App() {\n  const [n, setN] = useState(0);\n  const handle = () => {\n    setN(n + 1);\n    setN(n + 1);\n  };\n  return &lt;button onClick={handle}&gt;{n}&lt;/button&gt;;\n}</pre>', [
-    'يصبح الرقم 2 لأن كل setN تُنفذ فورًا في نفس اللحظة.',
+  ['في مكوّن React، لدينا متغيّر حالة n بقيمة ابتدائية 0. عند الضغط على زر، تُستدعى دالة handle التي تنفذ التحديث (تحويل n إلى n+1) مرتين متتاليتين في نفس اللحظة. ما القيمة النهائية لـ n بعد ضغطة واحدة؟', [
+    'يصبح الرقم 2 لأن كل استدعاء يُنفذ فورًا في نفس اللحظة.',
     'يبقى الرقم 0 لأن setState لا يعمل داخل event handlers مباشرة.',
     'يصبح الرقم 1 لأن React يجمع التحديثين بنفس القيمة القديمة.',
-    'يصبح الرقم 3 لأن كل setN تضيف واحدًا بعد الـ render السابق.'
+    'يصبح الرقم 3 لأن كل استدعاء يضيف واحدًا بعد الـ render السابق.'
   ], 2],
-  ['الأب يمرر function لطفل مغلف بـ React.memo، لكن الطفل يعيد الـ render عند كل تحديث للأب. ما السبب الأرجح؟', [
+  ['الأب يمرر دالة callback لطفل مغلّف بـ React.memo، لكن الطفل يعيد الـ render عند كل تحديث للأب. ما السبب الأرجح؟', [
     'React.memo لا يعمل مع functional components ويجب تحويلها إلى classes.',
     'الطفل يحتاج key مختلفًا عن الأب حتى يتوقف عن إعادة الـ render.',
     'استخدام useState داخل الطفل يجبره على الـ render مع كل تحديث.',
-    'function تُنشأ من جديد في كل render، فيتغير مرجعها ويفشل الفحص.'
+    'الدالة تُنشأ من جديد في كل render، فيتغير مرجعها ويفشل الفحص.'
   ], 3],
   ['في تطبيق ويب حديث، ما الفرق بين HTTP Cache وMemory Cache وService Worker Cache؟', [
     'لا فرق بينها؛ كلها تخزين مؤقت في المتصفح يعمل بنفس الآلية.',
@@ -146,18 +147,18 @@ FRONTEND: [
     'يعلّم التحديث كغير عاجل فيمكن مقاطعته للحفاظ على استجابة الإدخال.',
     'يلغي التحديث تلقائيًا بعد ثانية إذا لم يكتمل في الوقت المحدد.',
     'ينقل التحديث إلى الخادم لتقليل الحمل على المتصفح كاملًا.',
-    'يمنع React من إعادة render هذا الـ component نهائيًا بعد التفعيل.'
+    'يمنع React من إعادة render هذا المكوّن نهائيًا بعد التفعيل.'
   ], 0],
   ['صفحة ملف المستخدم تعرض أحيانًا بيانات مستخدم خاطئ بعد تنقل سريع، لأن استجابة قديمة وصلت متأخرة. ما الإصلاح الصحيح؟', [
     'تجاهل الحالة لأنها نادرة الحدوث في التطبيقات العملية عمومًا.',
     'تعطيل التنقل بين الصفحات أثناء انتظار أي استجابة من الشبكة.',
     'تغيير const إلى let حتى تتمكن الحالة من التحديث بعد التنقل.',
-    'إلغاء الطلب عند التنظيف بـ AbortController أو flag تجاهل.'
+    'إلغاء الطلب عند التنظيف باستخدام AbortController أو flag للتجاهل.'
   ], 3],
   ['ما الفرق العملي بين CSR وSSR من جهة تجربة المستخدم وSEO؟', [
     'لا فرق؛ كلاهما يعرض المحتوى بنفس السرعة ونفس الفهرسة.',
     'SSR يسلّم HTML مبكرًا، وCSR يعتمد على JS قبل ظهور المحتوى.',
-    'الفرق الأساسي في الأداء فقط، أما الـ SEO فيتساوى لأن المحركات تنفذ JavaScript دائماً.',
+    'الفرق الأساسي في الأداء فقط، أما الـ SEO فيتساوى لأن المحركات تنفذ JavaScript دائمًا.',
     'اختيار الاستراتيجية لا يؤثر على SEO لأن المحركات تنفذ JS.'
   ], 1],
   ['ما أفضل ممارسة عند العمل على ميزة جديدة في Git على GitHub؟', [
@@ -166,22 +167,22 @@ FRONTEND: [
     'ننشئ فرعًا للميزة ثم Pull Request للمراجعة قبل الدمج.',
     'نتجنب الفروع تمامًا ونعتمد على التعديل المباشر للملفات.'
   ], 2],
-  ['ما الذي يسببه هذا الكود عند أول تحميل؟<pre>useEffect(() => {\n  fetch(\'/api/user\').then(r =&gt; r.json()).then(setUser);\n}, [user]);</pre>', [
+  ['داخل useEffect في React، نستخدم fetch لجلب بيانات المستخدم من مسار /api/user ثم نستدعي setUser بالبيانات. قائمة dependencies تحتوي على user فقط. ما الذي يحدث عند أول تحميل للمكوّن؟', [
     'يُعاد الجلب باستمرار لأن setUser يغيّر user فيُشغّل الـ effect.',
-    'يجلب البيانات مرة واحدة فقط عند أول render للـ component في التطبيق.',
+    'يجلب البيانات مرة واحدة فقط عند أول render للمكوّن في التطبيق.',
     'لا يحدث شيء لأن user قيمته null في البداية ولا تتغير أبدًا.',
-    'يسبب syntax error لأن dependency array لا تقبل objects.'
+    'يسبب خطأً في الصياغة لأن dependency array لا تقبل objects.'
   ], 0],
   ['ما الخطر الأساسي من استخدام index كـ key في قائمة تتغير بالحذف والإدخال وإعادة الترتيب؟', [
     'لا مخاطر لأن React يتعامل مع الـ index بذكاء في كل الحالات.',
     'React يحذف العناصر من الذاكرة تلقائيًا عند تغيّر الـ index.',
     'React يمنع عرض القائمة إذا استُخدم الـ index كمفتاح في map.',
-    'قد ترتبط state الـ component بعنصر آخر بعد الحذف أو إعادة الترتيب.'
+    'قد ترتبط state المكوّن بعنصر آخر بعد الحذف أو إعادة الترتيب.'
   ], 3],
-  ['payment component يعيد الـ render كثيرًا رغم عدم تغيّر بياناته. بأي أداة تبدأ للتشخيص؟', [
-    'إعادة كتابة الـ component كاملًا لأن الكود القديم غالبًا هو السبب.',
+  ['مكوّن الدفع (payment component) يعيد الـ render كثيرًا رغم عدم تغيّر بياناته. بأي أداة تبدأ للتشخيص؟', [
+    'إعادة كتابة المكوّن كاملًا لأن الكود القديم غالبًا هو السبب.',
     'React DevTools Profiler لمعرفة ما أثار كل render وأي props.',
-    'حذف كل useEffect في الـ component لتقليل التفاعلات الجانبية كليًا.',
+    'حذف كل useEffect في المكوّن لتقليل التفاعلات الجانبية كليًا.',
     'فحص الـ parent component لمعرفة إن كان يمرر objects أو functions جديدة في كل render.'
   ], 1]
 ],
@@ -444,17 +445,6 @@ var NV_LETTERS = ['A','B','C','D','E','F','G','H'];
 function lbl(q, i){ return q[3] === 'nv' ? NV_LETTERS[i] : KEYS[i]; }
 function fmtTime(s){ var m = Math.floor(s/60); return m + ':' + (s%60 < 10 ? '0' : '') + (s%60); }
 function $(id){ return document.getElementById(id); }
-
-// ✅ دالة تنظيف النصوص من وسوم HTML لحماية Web3Forms
-function escapeHtml(unsafe) {
-    if (typeof unsafe !== 'string') return unsafe;
-    return unsafe
-         .replace(/&/g, "&amp;")
-         .replace(/</g, "&lt;")
-         .replace(/>/g, "&gt;")
-         .replace(/"/g, "&quot;")
-         .replace(/'/g, "&#039;");
-}
 
 function el(tag, attrs, kids){
   var e = document.createElement(tag);
@@ -744,7 +734,6 @@ function doSubmit(fromTimer){
   var specLabel = (SPECS.find(function(s){return s.code===spec;}) || {}).label || spec;
 
   var fields = {};
-  fields['botcheck']             = ''; // حماية إضافية
   fields['subject']              = '🔔 نتيجة اختبار جديدة: ' + user.name + ' — ' + specLabel;
   fields['from_name']            = 'منصة تقييم المتقدمين';
   fields['replyto']              = user.email;
@@ -767,19 +756,17 @@ function doSubmit(fromTimer){
       if (sel !== undefined && sel === q[2]) correct++;
     }
 
-    // ✅ تنظيف النص من وسوم HTML باستخدام escapeHtml
     var tmpQ = document.createElement('div');
     tmpQ.innerHTML = q[0];
-    var plainQ = escapeHtml((tmpQ.textContent || '').trim());
-    
-    if (q[4]) plainQ += '\n[' + escapeHtml(q[4]) + ']';
+    var plainQ = (tmpQ.textContent || '').trim();
+    if (q[4]) plainQ += '\n[' + q[4] + ']';
     if (q[5]) plainQ += '\n' + q[5];
 
     var optText = function(n){
       if (q[3] === 'nv') return 'الشكل ' + lbl(q,n);
       var t = document.createElement('div');
       t.innerHTML = q[1][n];
-      return escapeHtml((t.textContent || '').trim());
+      return (t.textContent || '').trim();
     };
 
     var answerText = (sel !== undefined) ? lbl(q,sel) + '. ' + optText(sel) : '(لم يجب)';
